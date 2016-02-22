@@ -1,11 +1,13 @@
 <#
-Usage
-keepPPPoE.ps1 -servers www.google.co.jp,192.168.2.1
+ # Usage
+ #     ps1ping.ps1 -inputpath C:\file\path\hoge.txt
+ #     ps1ping.ps1 -servers www.google.co.jp,192.168.2.1
+ #
 #>
 param (
     [string]$inputpath,
     [string[]]$Servers,
-    [string]$outputpath="C:\temp\pingresult.html"
+    [string]$outputpath = "C:\temp\pingresult.html"
 )
 
 if ($inputpath) {
@@ -20,8 +22,8 @@ if ($inputpath) {
 while (1) {
     $isalive = @(Test-Connection -ComputerName $pcname -Quiet)
     $result = 0..($pcname.Count - 1) | %{$pcname[$_] + "," + $isalive[$_]}
-    $head = (Get-Date).ToString() + " Server Aliveness"
+    $head = "Checking server aliveness at " + (Get-Date).ToString()
     $html = $result | ConvertFrom-Csv -Header "Server Name","isAlive" | ConvertTo-Html -Head $head -Title "Servers"
     $html | Out-File $outputpath
-    sleep -s 3600
+    sleep -s 600
 }
