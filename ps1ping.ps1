@@ -24,7 +24,7 @@ function Main()
 {
     $pcname = @("www.google.com","192.168.2.1")
     $outputpath = "C:\temp\pingresult.html"
-    $interval = 300
+    $interval = 1800
     $head = "<meta http-equiv='refresh' content='$interval' />"
     
     while (1) {
