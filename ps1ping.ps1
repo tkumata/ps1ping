@@ -19,11 +19,14 @@ if ($inputpath) {
     exit
 }
 
+$interval = 600
+$head = "<meta http-equiv='refresh' content='$interval' />"
+
 while (1) {
-    $isalive = @(Test-Connection -ComputerName $pcname -Quiet)
+    $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
     $result = 0..($pcname.Count - 1) | %{$pcname[$_] + "," + $isalive[$_]}
-    $head = "Checking server aliveness at " + (Get-Date).ToString()
-    $html = $result | ConvertFrom-Csv -Header "Server Name","isAlive" | ConvertTo-Html -Head $head -Title "Servers"
+    $body = "<h1>Check Hosts Aliveness</h1><h2>Check at " + (Get-Date).ToString() + "</h2>"
+    $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -Body $body
     $html | Out-File $outputpath
-    sleep -s 600
+    sleep -s $interval
 }
