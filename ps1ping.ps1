@@ -1,36 +1,37 @@
 <#
  # Usage
- #     ps1ping.ps1 -inputpath C:\file\path\hoge.txt
- #     ps1ping.ps1 -servers www.google.co.jp,192.168.2.1
+ #     ps1ping.ps1
+ #     ps1ping.ps1 -inputfile C:\file\path\hoge.txt
+ #     ps1ping.ps1 -servers www.google.com,www.microsoft.com
  #
 #>
 
-# param (
-#     [string]$inputpath,
-#     [string[]]$Servers,
-#     [string]$outputpath = "C:\temp\pingresult.html"
-# )
-
-# if ($inputpath) {
-#     $pcname = Get-Content $inputpath
-# } elseif ($Servers) {
-#     $pcname = $Servers
-# } else {
-#     echo "Please Specify Params"
-#     exit
-# }
+param (
+    [string]$inputfile,
+    [string[]]$servers = @("www.google.com","www.microsoft.com"),
+    [string]$outputpath = "C:\temp\pingresult.html"
+)
 
 function Main()
 {
-    $pcname = @("www.google.com","192.168.2.1")
-    $outputpath = "C:\temp\pingresult.html"
+    if ($inputfile) {
+        $pcname = Get-Content $inputfile
+    } elseif ($servers) {
+        $pcname = $servers
+    } else {
+        echo "Please Specify Params"
+        exit
+    }
+    
     $interval = 1800
-    $head = "<meta http-equiv='refresh' content='$interval' />"
+    $refresh = $interval + 60
+    $head = "<meta http-equiv='refresh' content='$refresh' />"
     
     while (1) {
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
         $result = 0..($pcname.Count - 1) | %{$pcname[$_] + "," + $isalive[$_]}
-        $body = "<h1>Check Hosts Aliveness</h1><h2>Check at " + (Get-Date).ToString() + "</h2>"
+        $body = "<h1>Check Hosts Aliveness</h1>`n"
+        $body += "<h2>Check at " + (Get-Date).ToString() + "</h2>`n"
         $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -Body $body
         $html | Out-File $outputpath
         sleep -s $interval
