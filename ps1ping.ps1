@@ -23,30 +23,36 @@ function Main() {
     }
     
     $interval = 1800
-    $refresh = $interval + 60
-    $head = "<meta charset=`"UTF-8`">
+    $body = "<h1>Hosts Aliveness</h1>`n<div class=`"msg`">This page is refreshed at random time.</div>`n"
+    
+    while (1) {
+        $randomObj = new-object random
+        $interval = $randomObj.next(600,1800)
+        $refresh = $interval + 10
+        $head = "<meta charset=`"UTF-8`">
 <meta http-equiv=`"refresh`" content=`"$refresh`" />
 <style>
 * {font-family:arial;}
-h1 {font-size:32px;font-weight:bold;}
-h2 {font-size:24px;font-weight:bold;}
+h1 {font-size:32px;font-weight:bold;margin:10px 0;}
+h2 {font-size:24px;font-weight:bold;margin:10px 0;}
 th {font-weight:normal;color:#fff;background:#14a;width:200px;text-align:center;border-bottom:1px solid #ccc;}
 table tr:nth-child(2n+1) {background:#f1f6fc;}
-.msg {margin:10px 0 10px 0;}
+.msg {margin:10px 0;}
 </style>"
-    
-    while (1) {
+        $preContent = "<!-- preContent -->
+<h2>ping result</h2>
+<div class=`"msg`">Refresh time is $refresh sec.</div>
+<!-- //preContent -->"
+        $postContent = "<!-- postContent -->
+<div class=`"msg`">Check at " + (Get-Date).ToString() + "</div>
+<!-- postContent -->"
+        
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
         $result = 0..($pcname.Count - 1) | %{$pcname[$_] + "," + $isalive[$_]}
-        $body = "<h1>Check Hosts Aliveness</h1>`n"
-        $body += $messText
-        $body += "<div class=`"msg`">Check at " + (Get-Date).ToString() + "</div>`n"
-        $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -Body $body
+        $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -PreContent $preContent -Body $body -PostContent $postContent
         $html | Out-File $outputpath -Encoding UTF8
+        
         sleep -s $interval
     }
 }
-
-# New-SelfHostedPS ps1ping.ps -Service -ServiceName ps1ping -ServiceDisplayName "ps1ping Demo"
-$messText = "<h2>ping result</h2>`n"
 Main
