@@ -32,12 +32,14 @@ function Main() {
         $head = "<meta charset=`"UTF-8`">
 <meta http-equiv=`"refresh`" content=`"$refresh`" />
 <style>
-* {font-family:arial;}
+html {font-family:arial;}
 h1 {font-size:32px;font-weight:bold;margin:10px 0;}
 h2 {font-size:24px;font-weight:bold;margin:10px 0;}
-th {font-weight:normal;color:#fff;background:#14a;width:200px;text-align:center;border-bottom:1px solid #ccc;}
-table tr:nth-child(2n+1) {background:#f1f6fc;}
+table {width:50%;}
+th {font-weight:normal;color:#fff;background:#14a;width:50%;text-align:center;border-bottom:1px solid #ccc;}
+table tr:nth-child(2n+1) {background:#def;}
 .msg {margin:10px 0;}
+.redStr {color:#c00;font-weight:bold;}
 </style>"
         $preContent = "<!-- preContent -->
 <h2>ping result</h2>
@@ -48,9 +50,9 @@ table tr:nth-child(2n+1) {background:#f1f6fc;}
 <!-- postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
-        $result = 0..($pcname.Count - 1) | %{$pcname[$_] + "," + $isalive[$_]}
+        $result = 0..($pcname.Count - 1) | %{if($isalive[$_] -eq "True"){$pcname[$_] + "," + $isalive[$_]}else{$pcname[$_] + "," + "###red###" + $isalive[$_] + "###/red###"}}
         $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -PreContent $preContent -Body $body -PostContent $postContent
-        $html | Out-File $outputpath -Encoding UTF8
+        $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") | Out-File $outputpath -Encoding UTF8
         
         sleep -s $interval
     }
