@@ -49,7 +49,7 @@ div {font-size:16px;}
         $preContent = "<!-- preContent -->
 <h2>ping result</h2>
 <div class=`"msg`">Check at " + (Get-Date).ToString() + " from <strong>" + $env:COMPUTERNAME + "</strong></div>
-<div class=`"msg`">Refresh time is $refresh sec.</div>
+<div class=`"msg`">Next refresh after $refresh sec.</div>
 <!-- /preContent -->"
         $postContent = "<!-- postContent -->
 <!-- /postContent -->"
