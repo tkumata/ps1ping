@@ -10,9 +10,11 @@ PowerShell を用いて延々と、10分から30分範囲のランダムなタ�
 ```
 PS> ps1ping.ps1
 or
-PS> ps1ping.ps1 -inputfile C:\path\to\file
+PS> ps1ping.ps1 -inputfile C:\path\to\file.txt
 or
 PS> ps1ping.ps1 -servers 192.168.1.1,www.example.com,winsname
+or
+PS> ps1ping.ps1 -outputpath C:\path\to\hoge.html
 ```
 
 ## 備考
