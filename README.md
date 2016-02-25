@@ -18,6 +18,11 @@ PS> ps1ping.ps1 -outputfile C:\path\to\hoge.html
 or
 PS> ps1ping.ps1 -configfile C:\path\to\config.txt
 ```
+設定ファイルの形式
+```
+outputfile=C:\path\to\file.html
+servers=192.168.1.1,192.168.1.2,winsname,www.example.com
+```
 
 ## 備考
 - 無通信状態が長いと、たまに ISP の認証エラーが起こりインターネットに出られなくなる傾向がある(ようなないような)
