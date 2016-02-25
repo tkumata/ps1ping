@@ -1,13 +1,19 @@
 <#
- # Usage
+ # Usage:
  #     ps1ping.ps1
  #     ps1ping.ps1 -inputfile C:\file\path\hoge.txt
  #     ps1ping.ps1 -servers www.google.com,www.microsoft.com
  #     ps1ping.ps1 -outputfile C:\path\to\result.html
+ #     ps1ping.ps1 -configfile C:\path\to\config.txt
+ #
+ # Config file format:
+ #     outputfile=C:\path\to\file.html
+ #     servers=www.google.com,www.microsoft.com,192.168.1.1
  #
 #>
 
 param (
+    [string]$configfile,
     [string]$inputfile,
     [string[]]$servers = @("www.google.com","www.microsoft.com"),
     [string]$outputfile = "C:\temp\pingresult.html"
@@ -16,6 +22,19 @@ param (
 function Main() {
     if ($inputfile) {
         $pcname = Get-Content $inputfile
+    } elseif ($configfile) {
+        $lines = Get-Content $configfile
+        foreach ($line in $lines) {
+            if ($line -match "^$") { continue }
+            if ($line -match "^\s*;") { continue }
+            
+            $param = $line.Split("=", 2)
+            if ($param[0] -eq "outputfile") {
+                $outputfile = $param[1]
+            } elseif ($param[0] -eq "servers") {
+                $pcname = $param[1].Split(",")
+            }
+        }
     } elseif ($servers) {
         $pcname = $servers
     } else {

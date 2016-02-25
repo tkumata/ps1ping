@@ -14,7 +14,9 @@ PS> ps1ping.ps1 -inputfile C:\path\to\file.txt
 or
 PS> ps1ping.ps1 -servers 192.168.1.1,www.example.com,winsname
 or
-PS> ps1ping.ps1 -outputpath C:\path\to\hoge.html
+PS> ps1ping.ps1 -outputfile C:\path\to\hoge.html
+or
+PS> ps1ping.ps1 -configfile C:\path\to\config.txt
 ```
 
 ## 備考
