@@ -3,13 +3,14 @@
  #     ps1ping.ps1
  #     ps1ping.ps1 -inputfile C:\file\path\hoge.txt
  #     ps1ping.ps1 -servers www.google.com,www.microsoft.com
+ #     ps1ping.ps1 -outputfile C:\path\to\result.html
  #
 #>
 
 param (
     [string]$inputfile,
     [string[]]$servers = @("www.google.com","www.microsoft.com"),
-    [string]$outputpath = "C:\temp\pingresult.html"
+    [string]$outputfile = "C:\temp\pingresult.html"
 )
 
 function Main() {
@@ -57,7 +58,7 @@ div {font-size:16px;}
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
         $result = 0..($pcname.Count - 1) |
         % {
-            if($isalive[$_] -eq "True") {
+            if ($isalive[$_] -eq "True") {
                 $pcname[$_] + "," + "###blue###" + $isalive[$_] + "###/blue###"
             } else {
                 $pcname[$_] + "," + "###red###" + $isalive[$_] + "###/red###"
@@ -65,7 +66,9 @@ div {font-size:16px;}
         }
         
         $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -Body $body -PreContent $preContent -PostContent $postContent
-        $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") | Out-File $outputpath -Encoding UTF8
+        $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") `
+              -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
+              | Out-File $outputfile -Encoding UTF8
         
         sleep -s $interval
     }
