@@ -1,10 +1,9 @@
 <#
  # Usage:
  #     ps1ping.ps1
- #     ps1ping.ps1 -inputfile C:\file\path\hoge.txt
+ #     ps1ping.ps1 -configfile C:\path\to\config.txt
  #     ps1ping.ps1 -servers www.google.com,www.microsoft.com
  #     ps1ping.ps1 -outputfile C:\path\to\result.html
- #     ps1ping.ps1 -configfile C:\path\to\config.txt
  #
  # Config file format:
  #     outputfile=C:\path\to\file.html
@@ -14,15 +13,12 @@
 
 param (
     [string]$configfile,
-    [string]$inputfile,
     [string[]]$servers = @("www.google.com","www.microsoft.com"),
     [string]$outputfile = "C:\temp\pingresult.html"
 )
 
 function Main() {
-    if ($inputfile) {
-        $pcname = Get-Content $inputfile
-    } elseif ($configfile) {
+    if ($configfile) {
         $lines = Get-Content $configfile
         foreach ($line in $lines) {
             if ($line -match "^$") { continue }
@@ -37,9 +33,6 @@ function Main() {
         }
     } elseif ($servers) {
         $pcname = $servers
-    } else {
-        echo "Please Specify Params"
-        exit
     }
     
     $interval = 1800
@@ -49,7 +42,7 @@ function Main() {
     while (1) {
         $randomObj = new-object random
         $interval = $randomObj.next(600,1800)
-        $refresh = $interval + 10
+        $refresh = $interval + 15
         $head = "<meta charset=`"UTF-8`">
 <meta http-equiv=`"refresh`" content=`"$refresh`" />
 <style>
@@ -57,8 +50,9 @@ html {font-family:arial;}
 h1 {font-size:32px;font-weight:bold;margin:10px 0;}
 h2 {font-size:24px;font-weight:bold;margin:10px 0;}
 table {width:512px;}
-table th:nth-child(1) {font-weight:bold;color:#fff;background:#06c;width:412px;text-align:center;}
-table th:nth-child(2) {font-weight:bold;color:#fff;background:#06c;width:100px;text-align:center;}
+table th {font-weight:bold;color:#fff;background:#06c;text-align:center;}
+table th:nth-child(1) {width:412px;}
+table th:nth-child(2) {width:100px;}
 table tr {font-family:Courier;font-size:14px;}
 table tr:nth-child(2n+1) {background:#def;}
 div {font-size:16px;}
@@ -72,6 +66,7 @@ div {font-size:16px;}
 <div class=`"msg`">Next refresh after $refresh sec.</div>
 <!-- /preContent -->"
         $postContent = "<!-- postContent -->
+
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
@@ -84,7 +79,9 @@ div {font-size:16px;}
             }
         }
         
-        $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" | ConvertTo-Html -Head $head -Title "Hosts" -Body $body -PreContent $preContent -PostContent $postContent
+        $html = $result | ConvertFrom-Csv -Header "Host Name","isAlive" |
+                          ConvertTo-Html -Head $head -Title "Hosts" -Body $body `
+                                         -PreContent $preContent -PostContent $postContent
         $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") `
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
               | Out-File $outputfile -Encoding UTF8

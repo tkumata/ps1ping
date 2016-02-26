@@ -10,13 +10,11 @@ PowerShell を用いて延々と、10 分から 30 分範囲のランダムな�
 ```
 PS> ps1ping.ps1
 or
-PS> ps1ping.ps1 -inputfile C:\path\to\file.txt
+PS> ps1ping.ps1 -configfile C:\path\to\config.txt
 or
 PS> ps1ping.ps1 -servers 192.168.1.1,www.example.com,winsname
 or
-PS> ps1ping.ps1 -outputfile C:\path\to\hoge.html
-or
-PS> ps1ping.ps1 -configfile C:\path\to\config.txt
+PS> ps1ping.ps1 -outputfile C:\path\to\output.html
 ```
 設定ファイルの形式
 ```
