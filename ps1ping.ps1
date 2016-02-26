@@ -37,7 +37,9 @@ function Main() {
     
     $interval = 1800
     $body = "<h1>Hosts Aliveness</h1>
-<div class=`"msg`">This page is refreshed at random time.</div>"
+<div class=`"msg`">
+This page is refreshed at random time.
+</div>"
     
     while (1) {
         $randomObj = new-object random
