@@ -62,13 +62,15 @@ div {font-size:16px;}
 .blueStr {color:#00c;font-weight:normal;}
 .redStr {color:#c00;font-weight:bold;}
 </style>"
+        
         $preContent = "<!-- preContent -->
 <h2>ping result</h2>
 <div class=`"msg`">Check at " + (Get-Date).ToString() + " from <strong>" + $env:COMPUTERNAME + "</strong></div>
 <div class=`"msg`">Next refresh after $refresh sec.</div>
 <!-- /preContent -->"
+        
         $postContent = "<!-- postContent -->
-
+<div class=`"msg`">Win7 は .NET を使っても UTF-8 が文字化けします。</div>
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
@@ -86,7 +88,11 @@ div {font-size:16px;}
                                          -PreContent $preContent -PostContent $postContent
         $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") `
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
-              | Out-File $outputfile -Encoding UTF8
+              | Out-File -Encoding Default $outputfile
+        
+        $data = [System.IO.File]::ReadAllLines($outputfile)
+        $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+        [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
         
         sleep -s $interval
     }
