@@ -45,7 +45,7 @@ This page is refreshed at random time.
         $randomObj = new-object random
         $interval = $randomObj.next(600,1800)
         $refresh = $interval + 15
-        $head = "<meta charset=`"UTF-8`">
+        $head = "<meta charset=`"UTF-8`" />
 <meta http-equiv=`"refresh`" content=`"$refresh`" />
 <style>
 html {font-family:arial;}
@@ -70,7 +70,7 @@ div {font-size:16px;}
 <!-- /preContent -->"
         
         $postContent = "<!-- postContent -->
-<div class=`"msg`">-Encoding 入れても .NET を使っても UTF-8 がほんの少し文字化けします。Win7, Win10 で。ナンデ!?</div>
+<div class=`"msg`">###premsg###</div>
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
@@ -88,11 +88,12 @@ div {font-size:16px;}
                                          -PreContent $preContent -PostContent $postContent
         $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") `
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
+              -creplace("###premsg###","あいうえおかきくけこ") `
               | Out-File -Encoding Default $outputfile
         
-        $data = [System.IO.File]::ReadAllLines($outputfile)
-        $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
-        [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
+        # $data = Get-Content -Encoding UTF8 "C:\temp\temp.html"
+        # $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+        # [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
         
         sleep -s $interval
     }
