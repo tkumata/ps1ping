@@ -70,7 +70,7 @@ div {font-size:16px;}
 <!-- /preContent -->"
         
         $postContent = "<!-- postContent -->
-<div class=`"msg`">.NET を使っても UTF-8 が文字化けします。Win7, Win10 で。ナンデ!?</div>
+<div class=`"msg`">-Encoding 入れても .NET を使っても UTF-8 がほんの少し文字化けします。Win7, Win10 で。ナンデ!?</div>
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
@@ -90,9 +90,9 @@ div {font-size:16px;}
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
               | Out-File -Encoding Default $outputfile
         
-        # $data = [System.IO.File]::ReadAllLines($outputfile)
-        # $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
-        # [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
+        $data = [System.IO.File]::ReadAllLines($outputfile)
+        $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+        [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
         
         sleep -s $interval
     }
