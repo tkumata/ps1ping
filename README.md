@@ -28,3 +28,8 @@ servers=192.168.1.1,192.168.1.2,winsname,www.example.com
 - 壊れても気にならなくて暇を持て余している低電力マシンが Windows だった
 
 ってことで PowerShell と。
+
+- 文字化けの原因は VSCode で UTF8 で書いてたからだった。
+- START -> UTF8 -> Encoding を無視して SJIS 化 -> Encoding によって UTF8 なり他のエンコーディングへ変換 -> 文字化け
+
+ってことで PowerShell スクリプト自体 SJIS で書いたらあっさり文字化けしない。これ...外人とソースをやりとりするとき問題なんじゃ...
