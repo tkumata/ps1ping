@@ -90,6 +90,7 @@ div {font-size:16px;}
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
               | Out-File -Encoding Default $outputfile
         
+        # without BOM
         $data = Get-Content $outputfile
         $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
         [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
