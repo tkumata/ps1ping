@@ -70,7 +70,7 @@ div {font-size:16px;}
 <!-- /preContent -->"
         
         $postContent = "<!-- postContent -->
-<div class=`"msg`">###premsg###</div>
+<div class=`"msg`">Ç†Ç¢Ç§Ç¶Ç®Ç©Ç´Ç≠ÇØÇ±</div>
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
@@ -88,12 +88,11 @@ div {font-size:16px;}
                                          -PreContent $preContent -PostContent $postContent
         $html -creplace("###red###","<span class=`"redStr`">") -creplace("###/red###","</span>") `
               -creplace("###blue###","<span class=`"blueStr`">") -creplace("###/blue###","</span>") `
-              -creplace("###premsg###","„ÅÇ„ÅÑ„ÅÜ„Åà„Åä„Åã„Åç„Åè„Åë„Åì") `
               | Out-File -Encoding Default $outputfile
         
-        # $data = Get-Content -Encoding UTF8 "C:\temp\temp.html"
-        # $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
-        # [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
+        $data = Get-Content $outputfile
+        $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+        [System.IO.File]::WriteAllLines($outputfile, $data, $Utf8NoBomEncoding)
         
         sleep -s $interval
     }
