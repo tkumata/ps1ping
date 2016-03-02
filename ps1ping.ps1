@@ -70,7 +70,7 @@ div {font-size:16px;}
 <!-- /preContent -->"
         
         $postContent = "<!-- postContent -->
-<div class=`"msg`">‚ ‚¢‚¤‚¦‚¨‚©‚«‚­‚¯‚±</div>
+<div class=`"msg`">Post Content.</div>
 <!-- /postContent -->"
         
         $isalive = @(Test-Connection -ComputerName $pcname -Count 1 -Quiet)
